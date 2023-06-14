@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.sudk.mapper.BookMapper">
+    <resultMap id="BaseResultMap" type="top.sudk.bean.Book">
+        <!--@mbg.generated-->
+        <!--@Table book-->
+        <id column="isbn" jdbcType="VARCHAR" property="isbn"/>
+        <result column="book_name" jdbcType="VARCHAR" property="bookName"/>
+        <result column="press" jdbcType="VARCHAR" property="press"/>
+        <result column="price" jdbcType="DECIMAL" property="price"/>
+        <result column="discount" jdbcType="DECIMAL" property="discount"/>
+        <result column="inventory" jdbcType="VARCHAR" property="inventory"/>
+        <result column="location" jdbcType="VARCHAR" property="location"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        isbn,
+        book_name,
+        press,
+        price,
+        discount,
+        inventory,
+        `location`,
+        update_time
+    </sql>
+
+
+
+    <select id="list" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from book limit 1000
+    </select>
+</mapper>
