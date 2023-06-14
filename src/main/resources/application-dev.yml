@@ -21,5 +21,5 @@ mybatis-plus:
 
 
 git:
-  repositoryURI: https://github.com/sudingkun/demo.git
+  repositoryUrl: https://github.com/sudingkun/demo.git
   localPath: /Users/sudingkun/Project/tmp/demo.git

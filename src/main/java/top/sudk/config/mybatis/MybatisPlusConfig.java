@@ -19,7 +19,7 @@ public class MybatisPlusConfig {
     public SlowQueryNotificationPlugin slowQueryNotificationPlugin() {
         SlowQueryNotificationPlugin slowQueryNotificationPlugin = new SlowQueryNotificationPlugin();
         Properties properties = new Properties();
-        properties.setProperty("slowQueryThreshold", "2000");
+        properties.setProperty("slowQueryThreshold", "100");
         slowQueryNotificationPlugin.setProperties(properties);
         return slowQueryNotificationPlugin;
     }

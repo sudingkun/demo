@@ -12,8 +12,10 @@ import org.eclipse.jgit.lib.RepositoryBuilder;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
+import org.python.google.common.collect.Sets;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -89,7 +91,7 @@ public class GitUtil {
     @SneakyThrows
     public static Set<RevCommit> getCommitHistoryForLines(BlameResult blameResult, int startLine, int endLine) {
 
-        Set<RevCommit> commits = Set.of();
+        Set<RevCommit> commits = Sets.newHashSet();
 
         for (int i = startLine; i <= endLine; i++) {
             RevCommit commit = getFileLineCommitHistory(blameResult, i);
