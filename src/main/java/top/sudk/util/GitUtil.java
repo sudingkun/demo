@@ -44,11 +44,8 @@ public class GitUtil {
                 return Git.open(localDir).getRepository();
 
             } else {
-//                CredentialsProvider credentialsProvider = new UsernamePasswordCredentialsProvider("PRIVATE-TOKEN", "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");
-
                 // 克隆远程仓库
                 return Git.cloneRepository()
-//                        .setCredentialsProvider(credentialsProvider)
                         .setURI(remoteUrl)
                         .setDirectory(localDir)
                         .setBranch("main")
