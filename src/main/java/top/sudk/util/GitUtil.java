@@ -10,9 +10,8 @@ import org.eclipse.jgit.blame.BlameResult;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryBuilder;
+import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.transport.CredentialsProvider;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.python.google.common.collect.Sets;
 
 import java.io.File;
@@ -41,7 +40,10 @@ public class GitUtil {
 
             // 检查本地目录是否存在仓库
             if (localDir.exists()) {
-                return Git.open(localDir).getRepository();
+                Git git = Git.open(localDir);
+                Repository repository = git.getRepository();
+                git.fetch().setRemote("origin").call();
+                return repository;
 
             } else {
                 // 克隆远程仓库
