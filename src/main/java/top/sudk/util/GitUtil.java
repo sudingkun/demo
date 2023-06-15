@@ -1,6 +1,7 @@
 package top.sudk.util;
 
 import cn.hutool.core.collection.ListUtil;
+import cn.hutool.setting.dialect.Props;
 import lombok.SneakyThrows;
 import org.eclipse.jgit.api.BlameCommand;
 import org.eclipse.jgit.api.Git;
@@ -15,14 +16,26 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.python.google.common.collect.Sets;
 
 import java.io.File;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@SuppressWarnings("all")
 public class GitUtil {
 
+    private static String repositoryUrl;
+
+    private static String localPath;
+
+    public static void init() {
+        Props props = new Props("application-dev.yml");
+        repositoryUrl = props.getStr("repositoryUrl");
+        localPath = props.getStr("localPath");
+        openOrCreateRepository(localPath, repositoryUrl);
+    }
+
+
     @SneakyThrows
-    private static Repository openOrCreateRepository(String localPath, String remoteUrl) {
+    public static Repository openOrCreateRepository(String localPath, String remoteUrl) {
         try {
             File localDir = new File(localPath);
 
@@ -31,11 +44,11 @@ public class GitUtil {
                 return Git.open(localDir).getRepository();
 
             } else {
-                CredentialsProvider credentialsProvider = new UsernamePasswordCredentialsProvider("PRIVATE-TOKEN", "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");
+//                CredentialsProvider credentialsProvider = new UsernamePasswordCredentialsProvider("PRIVATE-TOKEN", "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");
 
                 // 克隆远程仓库
                 return Git.cloneRepository()
-                        .setCredentialsProvider(credentialsProvider)
+//                        .setCredentialsProvider(credentialsProvider)
                         .setURI(remoteUrl)
                         .setDirectory(localDir)
                         .setBranch("main")
@@ -75,6 +88,12 @@ public class GitUtil {
     @SneakyThrows
     public static RevCommit getFileLineCommitHistory(BlameResult blameResult, int lineNumber) {
         return blameResult.getSourceCommit(lineNumber - 1);
+
+    }
+
+    @SneakyThrows
+    public static Set<RevCommit> getCommitHistoryForLines(String filePath, int startLine, int endLine) {
+        return getCommitHistoryForLines(localPath, repositoryUrl, filePath, startLine, endLine);
 
     }
 

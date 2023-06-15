@@ -3,7 +3,7 @@ package top.sudk.util;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import top.sudk.bean.MybatisMethod;
+import top.sudk.bean.QueryEvent;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class MybatisUtil {
 
-    public static void setLine(MybatisMethod mybatisMethod, String xmlContent) throws Exception {
+    public static void setLine(QueryEvent mybatisMethod, String xmlContent) throws Exception {
         SAXReader reader = new SAXReader();
         Document document = reader.read(new ByteArrayInputStream(xmlContent.getBytes()));
         org.dom4j.Element root = document.getRootElement();

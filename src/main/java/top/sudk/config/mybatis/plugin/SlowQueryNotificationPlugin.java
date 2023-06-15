@@ -1,6 +1,7 @@
 package top.sudk.config.mybatis.plugin;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.date.TimeInterval;
 import cn.hutool.extra.spring.SpringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +16,7 @@ import org.apache.ibatis.plugin.Invocation;
 import org.apache.ibatis.plugin.Signature;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
-import org.eclipse.jgit.revwalk.RevCommit;
-import top.sudk.bean.MybatisMethod;
-import top.sudk.util.GitUtil;
-import top.sudk.util.MybatisUtil;
+import top.sudk.bean.QueryEvent;
 
 import java.util.Properties;
 
@@ -54,17 +52,18 @@ public class SlowQueryNotificationPlugin implements Interceptor {
         namespace = namespace.substring(0, namespace.lastIndexOf("."));
         SqlCommandType sqlCommandType = mappedStatement.getSqlCommandType();
 
-
-        long startTime = System.currentTimeMillis();
+        TimeInterval timer = DateUtil.timer();
         Object result = invocation.proceed();
-        if (System.currentTimeMillis() - startTime > slowQueryThreshold) {
+        long sqlTime = timer.intervalRestart();
+        if (sqlTime > slowQueryThreshold) {
             String sql = mappedStatement.getBoundSql(parameter).getSql();
-            MybatisMethod mybatisMethod = new MybatisMethod();
-            mybatisMethod.setId(id);
-            mybatisMethod.setNamespace(namespace);
-            mybatisMethod.setSql(sql);
-            mybatisMethod.setSqlCommandType(sqlCommandType);
-            SpringUtil.publishEvent(mybatisMethod);
+            QueryEvent queryEvent = new QueryEvent();
+            queryEvent.setId(id);
+            queryEvent.setNamespace(namespace);
+            queryEvent.setSql(sql);
+            queryEvent.setSqlTime(sqlTime);
+            queryEvent.setSqlCommandType(sqlCommandType);
+            SpringUtil.publishEvent(queryEvent);
         }
 
 

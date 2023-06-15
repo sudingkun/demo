@@ -7,11 +7,12 @@ import org.apache.ibatis.mapping.SqlCommandType;
  * @author sudingkun
  */
 @Data
-public class MybatisMethod {
+public class QueryEvent {
     private String namespace;
     private String id;
     private SqlCommandType sqlCommandType;
     private String sql;
+    private long sqlTime;
     private int startLine;
     private int endLine;
 }

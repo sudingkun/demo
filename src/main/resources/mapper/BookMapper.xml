@@ -26,10 +26,9 @@
     </sql>
 
 
-
     <select id="list" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from book limit 5000
+        from book
     </select>
 </mapper>
