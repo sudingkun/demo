@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import top.sudk.bean.MybatisMethod;
+import top.sudk.bean.QueryEvent;
 import top.sudk.config.mybatis.plugin.MybatisResourcesConfig;
 import top.sudk.util.GitUtil;
 import top.sudk.util.MybatisUtil;
@@ -35,22 +35,23 @@ public class Listener {
 
     @Async
     @EventListener
-    public void event(MybatisMethod mybatisMethod) {
+    public void event(QueryEvent queryEvent) {
         try {
-            String namespace = mybatisMethod.getNamespace();
-            String id = mybatisMethod.getId();
-            SqlCommandType sqlCommandType = mybatisMethod.getSqlCommandType();
+            String namespace = queryEvent.getNamespace();
+            String id = queryEvent.getId();
+            SqlCommandType sqlCommandType = queryEvent.getSqlCommandType();
             String xmlContent = mybatisResourcesConfig.getSqlResource(namespace, id, sqlCommandType);
             String xmlPath = mybatisResourcesConfig.getSqlResourcePatch(namespace, id, sqlCommandType);
             if (xmlContent == null || xmlPath == null) {
                 return;
             }
 
-            MybatisUtil.setLine(mybatisMethod, xmlContent);
+            MybatisUtil.setLine(queryEvent, xmlContent);
 
+            log.info("query event {}", queryEvent);
 
             // 使用 git 插件获取 git 提交记录
-            for (RevCommit commit : GitUtil.getCommitHistoryForLines(localPath, repositoryUrl, "src/main/resources/" + xmlPath.split("/classes/|/classes!/")[1], mybatisMethod.getStartLine(), mybatisMethod.getEndLine())) {
+            for (RevCommit commit : GitUtil.getCommitHistoryForLines("src/main/resources/" + xmlPath.split("/classes/|/classes!/")[1], queryEvent.getStartLine(), queryEvent.getEndLine())) {
                 String msg = "Commit Id: " + commit.getName() + "\n" +
                         "Author: " + commit.getAuthorIdent().getName() + "\n" +
                         "Date: " + DateUtil.formatDate(commit.getAuthorIdent().getWhen()) + "\n" +

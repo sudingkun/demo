@@ -1,10 +1,8 @@
 package top.sudk.config.mybatis;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
-import top.sudk.config.mybatis.plugin.MybatisResourcesConfig;
+import top.sudk.config.mybatis.plugin.QueryUserPlugin;
 import top.sudk.config.mybatis.plugin.SlowQueryNotificationPlugin;
 
 import java.util.Properties;
@@ -19,9 +17,15 @@ public class MybatisPlusConfig {
     public SlowQueryNotificationPlugin slowQueryNotificationPlugin() {
         SlowQueryNotificationPlugin slowQueryNotificationPlugin = new SlowQueryNotificationPlugin();
         Properties properties = new Properties();
-        properties.setProperty("slowQueryThreshold", "100");
+        properties.setProperty("slowQueryThreshold", "1");
         slowQueryNotificationPlugin.setProperties(properties);
         return slowQueryNotificationPlugin;
+    }
+
+
+    @Bean
+    public QueryUserPlugin queryUserPlugin() {
+        return new QueryUserPlugin();
     }
 
 }
